@@ -1,0 +1,26 @@
+# Python キャッシュ・コンパイル成果物
+__pycache__/
+*.py[cod]
+*.so
+
+# パッケージ・ビルド成果物
+*.egg-info/
+*.egg
+build/
+dist/
+
+# 開発環境
+venv/
+.venv/
+.env
+
+# テスト・品質ツール
+.pytest_cache/
+.coverage
+htmlcov/
+
+# エディタ・OS 固有ファイル
+.vscode/
+.idea/
+*.swp
+.DS_Store
