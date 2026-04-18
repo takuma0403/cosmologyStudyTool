@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Tuple
+from dataclasses import dataclass, field
+from typing import Optional, Tuple
 
 
 @dataclass
@@ -17,9 +17,11 @@ class MinkowskiLineConfig:
     beta : float
         ブーストパラメータ v/c。|β| < 1 が必要。
     line_slope : float
-        直線① の傾き（ω = slope * x + intercept）。
+        直線① の傾き（ω = slope * x + intercept）。x_const が None のときのみ使用。
     line_intercept : float
-        直線① の切片。
+        直線① の切片。x_const が None のときのみ使用。
+    x_const : float or None
+        垂直世界線 x = x_const を描画する場合に指定。設定すると line_slope/line_intercept は無視。
     show_light_cone : bool
         光円錐 (ω = ±x) を描画するか。
     show_primed_axes : bool
@@ -35,6 +37,7 @@ class MinkowskiLineConfig:
     beta: float = 0.6
     line_slope: float = 0.5
     line_intercept: float = 0.0
+    x_const: Optional[float] = None
     show_light_cone: bool = True
     show_primed_axes: bool = True
     n_points: int = 400

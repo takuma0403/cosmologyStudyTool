@@ -103,9 +103,12 @@ def _compute_line_data(
     # ω' 軸: S 系での x' = 0 の軌跡 → x = β·ω → 点 (β·λ, λ)
     omp_ax_x, omp_ax_om = lorentz_boost(beta * lam_om, lam_om, beta_view)
 
-    # 直線①: ω = slope·x + intercept → 点 (λ, slope·λ + intercept)
-    line1_om = config.line_slope * lam_x + config.line_intercept
-    line1_x, line1_om_t = lorentz_boost(lam_x, line1_om, beta_view)
+    # 直線①: x_const が指定されていれば垂直世界線、なければ slope/intercept 直線
+    if config.x_const is not None:
+        line1_x, line1_om_t = lorentz_boost(np.full(n, config.x_const), lam_om, beta_view)
+    else:
+        line1_om = config.line_slope * lam_x + config.line_intercept
+        line1_x, line1_om_t = lorentz_boost(lam_x, line1_om, beta_view)
 
     result: Dict[str, Tuple[NDArray, NDArray]] = {
         "x_axis":    (x_ax_x,  x_ax_om),
@@ -186,11 +189,15 @@ def _draw_single_panel(
         )
 
     # 直線①（赤 solid）
+    if config.x_const is not None:
+        line1_label = f"Line① (x={config.x_const:+.2f})"
+    else:
+        line1_label = f"Line① (ω={config.line_slope:+.2f}x{config.line_intercept:+.2f})"
     ax.plot(
         *data["line1"],
         color=_COLOR_LINE1, linewidth=2.5, linestyle="-",
         zorder=5,
-        label=f"Line① (ω={config.line_slope:+.2f}x{config.line_intercept:+.2f})",
+        label=line1_label,
     )
 
     # 原点マーカー
