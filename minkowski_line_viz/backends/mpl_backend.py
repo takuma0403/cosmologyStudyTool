@@ -84,7 +84,7 @@ def _compute_line_data(
     beta = config.beta
     n = config.n_points
     x_min, x_max = config.x_range
-    w_min, w_max = config.wega_range
+    w_min, w_max = config.w_range
 
     # パラメータ配列
     lam_x  = np.linspace(x_min, x_max, n)   # x 方向のパラメータ
@@ -112,7 +112,7 @@ def _compute_line_data(
 
     result: Dict[str, Tuple[NDArray, NDArray]] = {
         "x_axis":    (x_ax_x,  x_ax_w),
-        "wega_axis": (w_ax_x, w_ax_w),
+        "w_axis": (w_ax_x, w_ax_w),
         "xp_axis":   (xp_ax_x, xp_ax_w),
         "wp_axis":  (wp_ax_x, wp_ax_w),
         "line1":     (line1_x,  line1_w_t),
