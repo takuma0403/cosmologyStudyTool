@@ -32,7 +32,7 @@ def main() -> None:
     os.makedirs(out_dir, exist_ok=True)
 
     # ── 1. デフォルト設定での静的図 ──
-    # β=0.6, 直線①: ω = 0.5x
+    # β=0.6, 直線①: w = 0.5x
     cfg_default = MinkowskiLineConfig()
     fig = plot_minkowski_line(config=cfg_default)
     path = os.path.join(out_dir, "default_static.png")
@@ -40,13 +40,13 @@ def main() -> None:
     print(f"保存: {path}")
 
     # ── 2. カスタム設定での静的図 ──
-    # β=0.8, 直線①: ω = 1.5x + 0.5, 光円錐なし
+    # β=0.8, 直線①: w = 1.5x + 0.5, 光円錐なし
     cfg_custom = MinkowskiLineConfig(
         beta=0.8,
         line_slope=1.5,
         line_intercept=0.5,
         x_range=(-3.0, 3.0),
-        omega_range=(-3.0, 3.0),
+        w_range=(-3.0, 3.0),
         show_light_cone=False,
     )
     fig = plot_minkowski_line(config=cfg_custom)

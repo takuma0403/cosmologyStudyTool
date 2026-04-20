@@ -20,10 +20,10 @@ from lorentz_viz.core.transforms import lorentz_boost
 # カラースキーム
 # S 系軸: 寒色系
 _COLOR_X_AXIS   = "#56B4E9"   # 水色 (solid): x 軸
-_COLOR_OM_AXIS  = "#0072B2"   # 青   (dotted): ω 軸
+_COLOR_W_AXIS  = "#0072B2"   # 青   (dotted): w 軸
 # S' 系軸: 黄緑・緑系
 _COLOR_XP_AXIS  = "#AADD00"   # 黄緑 (solid): x' 軸
-_COLOR_OMP_AXIS = "#228B22"   # 緑   (dotted): ω' 軸
+_COLOR_WP_AXIS = "#228B22"   # 緑   (dotted): w' 軸
 # その他
 _COLOR_LIGHT_CONE = "#888888"  # 灰: 光円錐
 _COLOR_LINE1      = "#D62728"  # 赤: 直線1
@@ -66,64 +66,64 @@ def _compute_line_data(
     """beta_view で全描画要素をローレンツ変換した座標を返す。
 
     「視点ブースト」beta_view を適用することで、
-    - beta_view = 0         → S 系ビュー（x, ω 直交、x', ω' 斜め）
-    - beta_view = +config.beta → S' 系ビュー（x', ω' 直交）
+    - beta_view = 0         → S 系ビュー（x, w 直交、x', w' 斜め）
+    - beta_view = +config.beta → S' 系ビュー（x', w' 直交）
 
     数学的根拠
     ----------
     x' 軸の S 系座標 (λ, β·λ) に lorentz_boost(..., +β) を適用すると
-        x'' = γ(λ - β·β·λ) = λ(1-β²)·γ = λ/γ,  ω'' = 0   → 水平
-    ω' 軸の S 系座標 (β·λ, λ) に同変換を適用すると
-        x'' = 0,  ω'' = λ/γ                                  → 垂直
+        x'' = γ(λ - β·β·λ) = λ(1-β²)·γ = λ/γ,  w'' = 0   → 水平
+    w' 軸の S 系座標 (β·λ, λ) に同変換を適用すると
+        x'' = 0,  w'' = λ/γ                                  → 垂直
 
     Notes
     -----
     lorentz_boost(x, ct, beta) の第2引数 ct は、
-    ここでは ω（時間的座標）として使用する。数学的構造は同一。
+    ここでは w（時間的座標）として使用する。数学的構造は同一。
     """
     beta = config.beta
     n = config.n_points
     x_min, x_max = config.x_range
-    om_min, om_max = config.omega_range
+    w_min, w_max = config.wega_range
 
     # パラメータ配列
     lam_x  = np.linspace(x_min, x_max, n)   # x 方向のパラメータ
-    lam_om = np.linspace(om_min, om_max, n)  # ω 方向のパラメータ
+    lam_w = np.linspace(w_min, w_max, n)  # w 方向のパラメータ
 
     # S 系座標を定義してから beta_view で変換
     # x 軸: (λ, 0)
-    x_ax_x, x_ax_om = lorentz_boost(lam_x, np.zeros(n), beta_view)
+    x_ax_x, x_ax_w = lorentz_boost(lam_x, np.zeros(n), beta_view)
 
-    # ω 軸: (0, λ)
-    om_ax_x, om_ax_om = lorentz_boost(np.zeros(n), lam_om, beta_view)
+    # w 軸: (0, λ)
+    w_ax_x, w_ax_w = lorentz_boost(np.zeros(n), lam_w, beta_view)
 
-    # x' 軸: S 系での ω' = 0 の軌跡 → ω = β·x → 点 (λ, β·λ)
-    xp_ax_x, xp_ax_om = lorentz_boost(lam_x, beta * lam_x, beta_view)
+    # x' 軸: S 系での w' = 0 の軌跡 → w = β·x → 点 (λ, β·λ)
+    xp_ax_x, xp_ax_w = lorentz_boost(lam_x, beta * lam_x, beta_view)
 
-    # ω' 軸: S 系での x' = 0 の軌跡 → x = β·ω → 点 (β·λ, λ)
-    omp_ax_x, omp_ax_om = lorentz_boost(beta * lam_om, lam_om, beta_view)
+    # w' 軸: S 系での x' = 0 の軌跡 → x = β·w → 点 (β·λ, λ)
+    wp_ax_x, wp_ax_w = lorentz_boost(beta * lam_w, lam_w, beta_view)
 
     # 直線1: x_const が指定されていれば垂直世界線、なければ slope/intercept 直線
     if config.x_const is not None:
-        line1_x, line1_om_t = lorentz_boost(np.full(n, config.x_const), lam_om, beta_view)
+        line1_x, line1_w_t = lorentz_boost(np.full(n, config.x_const), lam_w, beta_view)
     else:
-        line1_om = config.line_slope * lam_x + config.line_intercept
-        line1_x, line1_om_t = lorentz_boost(lam_x, line1_om, beta_view)
+        line1_w = config.line_slope * lam_x + config.line_intercept
+        line1_x, line1_w_t = lorentz_boost(lam_x, line1_w, beta_view)
 
     result: Dict[str, Tuple[NDArray, NDArray]] = {
-        "x_axis":    (x_ax_x,  x_ax_om),
-        "omega_axis": (om_ax_x, om_ax_om),
-        "xp_axis":   (xp_ax_x, xp_ax_om),
-        "omp_axis":  (omp_ax_x, omp_ax_om),
-        "line1":     (line1_x,  line1_om_t),
+        "x_axis":    (x_ax_x,  x_ax_w),
+        "wega_axis": (w_ax_x, w_ax_w),
+        "xp_axis":   (xp_ax_x, xp_ax_w),
+        "wp_axis":  (wp_ax_x, wp_ax_w),
+        "line1":     (line1_x,  line1_w_t),
     }
 
-    # 光円錐: ω = ±x → 点 (λ, λ) と (λ, -λ)
+    # 光円錐: w = ±x → 点 (λ, λ) と (λ, -λ)
     if config.show_light_cone:
-        lc_pos_x, lc_pos_om = lorentz_boost(lam_x,  lam_x, beta_view)
-        lc_neg_x, lc_neg_om = lorentz_boost(lam_x, -lam_x, beta_view)
-        result["lightcone_pos"] = (lc_pos_x, lc_pos_om)
-        result["lightcone_neg"] = (lc_neg_x, lc_neg_om)
+        lc_pos_x, lc_pos_w = lorentz_boost(lam_x,  lam_x, beta_view)
+        lc_neg_x, lc_neg_w = lorentz_boost(lam_x, -lam_x, beta_view)
+        result["lightcone_pos"] = (lc_pos_x, lc_pos_w)
+        result["lightcone_neg"] = (lc_neg_x, lc_neg_w)
 
     return result
 
@@ -138,24 +138,24 @@ def _draw_single_panel(
     """単一パネルへの描画（静的図・アニメーション共用）。"""
     ax.cla()
     ax.set_xlim(config.x_range)
-    ax.set_ylim(config.omega_range)
+    ax.set_ylim(config.w_range)
     ax.set_aspect("equal", adjustable="box")
     ax.set_title(title, fontsize=11)
 
-    # 軸ラベル: S' 系ビューでは x', ω' と表示
+    # 軸ラベル: S' 系ビューでは x', w' と表示
     if is_primed_view:
         ax.set_xlabel("x'", fontsize=12)
-        ax.set_ylabel("ω'", fontsize=12)
+        ax.set_ylabel("w'", fontsize=12)
     else:
         ax.set_xlabel("x", fontsize=12)
-        ax.set_ylabel("ω", fontsize=12)
+        ax.set_ylabel("w", fontsize=12)
 
     # 光円錐
     if config.show_light_cone and "lightcone_pos" in data:
         ax.plot(
             *data["lightcone_pos"],
             color=_COLOR_LIGHT_CONE, linewidth=1.2, linestyle="--",
-            zorder=2, label="light cone (ω=±x)",
+            zorder=2, label="light cone (w=±x)",
         )
         ax.plot(
             *data["lightcone_neg"],
@@ -170,9 +170,9 @@ def _draw_single_panel(
         zorder=3, label="x axis" if not is_primed_view else "x axis (S)",
     )
     ax.plot(
-        *data["omega_axis"],
-        color=_COLOR_OM_AXIS, linewidth=2.0, linestyle=":",
-        zorder=3, label="ω axis" if not is_primed_view else "ω axis (S)",
+        *data["w_axis"],
+        color=_COLOR_W_AXIS, linewidth=2.0, linestyle=":",
+        zorder=3, label="w axis" if not is_primed_view else "w axis (S)",
     )
 
     # S' 系座標軸（黄緑 solid / 緑 dotted）
@@ -183,16 +183,16 @@ def _draw_single_panel(
             zorder=4, label="x' axis",
         )
         ax.plot(
-            *data["omp_axis"],
-            color=_COLOR_OMP_AXIS, linewidth=2.0, linestyle=":",
-            zorder=4, label="ω' axis",
+            *data["wp_axis"],
+            color=_COLOR_WP_AXIS, linewidth=2.0, linestyle=":",
+            zorder=4, label="w' axis",
         )
 
     # 直線1（赤 solid）
     if config.x_const is not None:
         line1_label = f"Line 1 (x={config.x_const:+.2f})"
     else:
-        line1_label = f"Line 1 (ω={config.line_slope:+.2f}x{config.line_intercept:+.2f})"
+        line1_label = f"Line 1 (w={config.line_slope:+.2f}x{config.line_intercept:+.2f})"
     ax.plot(
         *data["line1"],
         color=_COLOR_LINE1, linewidth=2.5, linestyle="-",
@@ -217,7 +217,7 @@ class MinkowskiLineMatplotlibBackend(MinkowskiLineBackend):
         """左右 2 パネルの静的図を描画して Figure を返す。
 
         左: S 系ビュー（β_view=0）
-        右: S' 系ビュー（β_view=+β → x', ω' 直交）
+        右: S' 系ビュー（β_view=+β → x', w' 直交）
         """
         fig, (ax_left, ax_right) = plt.subplots(
             1, 2, figsize=(14, 7), constrained_layout=True
@@ -232,7 +232,7 @@ class MinkowskiLineMatplotlibBackend(MinkowskiLineBackend):
             is_primed_view=False,
         )
 
-        # 右パネル: S' 系ビュー（β_view=+β で x', ω' が直交になる）
+        # 右パネル: S' 系ビュー（β_view=+β で x', w' が直交になる）
         data_right = _compute_line_data(config, beta_view=config.beta)
         _draw_single_panel(
             ax_right, data_right, config,
@@ -250,7 +250,7 @@ class MinkowskiLineMatplotlibBackend(MinkowskiLineBackend):
         """S 系ビュー → S' 系ビューへの視点補正アニメーションを返す。
 
         β_view を 0 から +β_target まで ease-in-out 補間で変化させる。
-        β_view=+β のとき x', ω' 軸が直交になる。
+        β_view=+β のとき x', w' 軸が直交になる。
 
         Notes
         -----
@@ -262,7 +262,7 @@ class MinkowskiLineMatplotlibBackend(MinkowskiLineBackend):
         gamma = 1.0 / np.sqrt(1.0 - config.beta ** 2)
 
         # ease-in-out で β_view を 0 → +β_target に補間
-        # β_view=+β のとき x' 軸が水平・ω' 軸が垂直になる
+        # β_view=+β のとき x' 軸が水平・w' 軸が垂直になる
         beta_views: NDArray = _ease_inout_sequence(0.0, config.beta, frames)
 
         def update(frame_idx: int) -> List:

@@ -72,12 +72,12 @@ fig_html.write_html("minkowski.html")
 ```python
 from minkowski_line_viz import plot_minkowski_line, animate_frame_correction, MinkowskiLineConfig
 
-# デフォルト設定（β=0.6, 直線: ω=0.5x）
+# デフォルト設定（β=0.6, 直線: w=0.5x）
 cfg = MinkowskiLineConfig()
 fig = plot_minkowski_line(config=cfg)
 fig.savefig("line.png")
 
-# カスタム設定（β=0.8, 直線: ω=1.5x+0.5）
+# カスタム設定（β=0.8, 直線: w=1.5x+0.5）
 cfg_custom = MinkowskiLineConfig(
     beta=0.8,
     line_slope=1.5,

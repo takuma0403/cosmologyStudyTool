@@ -15,8 +15,8 @@ class MinkowskiLineBackend(ABC):
     def draw_static(self, config: MinkowskiLineConfig) -> Any:
         """左右 2 パネルの静的図を描画する。
 
-        左パネル: S 系ビュー（x, ω 直交、x', ω' 斜め）
-        右パネル: S' 系ビュー（x', ω' 直交、直線① 変換後）
+        左パネル: S 系ビュー（x, w 直交、x', w' 斜め）
+        右パネル: S' 系ビュー（x', w' 直交、直線① 変換後）
 
         Returns
         -------
