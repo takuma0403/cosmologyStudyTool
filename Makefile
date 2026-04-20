@@ -17,5 +17,9 @@ setup:
 run: $(VENV_DIR)
 	$(PYTHON) $(word 2, $(MAKECMDGOALS))
 
+pip-install: $(VENV_DIR)
+	$(PIP) install $(word 2, $(MAKECMDGOALS))
+	$(MAKE) freeze
+
 %:
 	@:
