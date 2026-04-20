@@ -26,7 +26,7 @@ _COLOR_XP_AXIS  = "#AADD00"   # 黄緑 (solid): x' 軸
 _COLOR_OMP_AXIS = "#228B22"   # 緑   (dotted): ω' 軸
 # その他
 _COLOR_LIGHT_CONE = "#888888"  # 灰: 光円錐
-_COLOR_LINE1      = "#D62728"  # 赤: 直線①
+_COLOR_LINE1      = "#D62728"  # 赤: 直線1
 
 
 # ---------------------------------------------------------------------------
@@ -103,7 +103,7 @@ def _compute_line_data(
     # ω' 軸: S 系での x' = 0 の軌跡 → x = β·ω → 点 (β·λ, λ)
     omp_ax_x, omp_ax_om = lorentz_boost(beta * lam_om, lam_om, beta_view)
 
-    # 直線①: x_const が指定されていれば垂直世界線、なければ slope/intercept 直線
+    # 直線1: x_const が指定されていれば垂直世界線、なければ slope/intercept 直線
     if config.x_const is not None:
         line1_x, line1_om_t = lorentz_boost(np.full(n, config.x_const), lam_om, beta_view)
     else:
@@ -188,11 +188,11 @@ def _draw_single_panel(
             zorder=4, label="ω' axis",
         )
 
-    # 直線①（赤 solid）
+    # 直線1（赤 solid）
     if config.x_const is not None:
-        line1_label = f"Line① (x={config.x_const:+.2f})"
+        line1_label = f"Line 1 (x={config.x_const:+.2f})"
     else:
-        line1_label = f"Line① (ω={config.line_slope:+.2f}x{config.line_intercept:+.2f})"
+        line1_label = f"Line 1 (ω={config.line_slope:+.2f}x{config.line_intercept:+.2f})"
     ax.plot(
         *data["line1"],
         color=_COLOR_LINE1, linewidth=2.5, linestyle="-",
